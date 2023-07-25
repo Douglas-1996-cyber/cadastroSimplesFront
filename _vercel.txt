@@ -1,1 +1,0 @@
-vc-domain-verify=cadastrosimples.douglas.com,4459511b2cc4802f5c1d
