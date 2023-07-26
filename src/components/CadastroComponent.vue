@@ -83,6 +83,10 @@
          }, "200")
       }
     },
+    created(){
+      console.log('criado')
+    
+    },
     watch:{
       price(){
         console.log(this.price.indexOf('.'))

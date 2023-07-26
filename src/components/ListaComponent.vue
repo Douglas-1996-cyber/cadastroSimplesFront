@@ -2,13 +2,12 @@
   <div>
     <div class="listar">
       <form id="buscar">
-        <input type="text" name="buscar"/>
-        <button type="button" id="buscarButton"><i class="fa-solid fa-magnifying-glass"></i></button> 
-     
-        <button type="button" :id="produtosSelecionados.length > 0 ? 'excluirButton' : 'excluirButtonInvalido'"
+          <input type="text" autocomplete="off" name="buscar" placeholder="Buscar" v-model="buscar"/>
+          <span v-if="habilitarLixo"  id='excluirButton' 
           :disabled="!produtosSelecionados.length > 0" @click="verificarExcluirSelecionados">
-     <i class="fa-solid fa-trash-can"></i></button> 
+     <i class="fa-solid fa-trash-can"></i></span> 
       </form>
+     
       <table class="tabelaProduto" cellpadding="2" width="100%">
       <thead>
         <tr>
@@ -43,15 +42,15 @@
           <th>Selecionar</th>
         </tr>
       </thead>
-      <tbody class="listaProdutos">
+      <tbody>
         <tr v-for="produto in produtos.data" v-bind:key="produto.id">
           <td>{{ produto.name }}</td>
           <td>R$ {{ produto.price }}</td>
           <td>{{ produto.amount }}</td>
           <td >
-            <button type="button" id="excluirButton" @click="VerificarExclusao(produto)" style="margin-right:2px;" :disabled="desativar" 
+            <span v-if="!desativar" id="excluirButton" @click="VerificarExclusao(produto)" style="margin-right:2px;" 
             :class="!desativar ? 'excluirIcone' : 'excluirIconeInvalido'"
-            ><i class="fa-solid fa-trash-can"></i></button>
+            ><i class="fa-solid fa-trash-can"></i></span>
               <router-link v-if="!desativar" :to="`/alteracao/${produto.id}`"><i class="fa-solid fa-pencil"></i></router-link>
               
           </td>
@@ -70,16 +69,12 @@
     Tem certeza que deseja excluir os produtos selecionado?
     <span>
     <button type="button" @click="excluirSelecionados">Sim</button>
-    <button type="button" @click="visibilidadeExclusao ='display:none', desativar=false">Não</button>
+    <button type="button" @click="visibilidadeExclusao ='display:none', desativar=false, produtosSelecionados=[]">Não</button>
     </span>
    </div>     
   </div>
   <div class="paginacao">
-        <ul type="none" v-if="this.produtos.last_page > 1" >
-            <li v-for="l, key in produtos.links" :key="key" >
-              <button @click="paginar(l)" >{{ l.label }}</button>
-            </li>
-          </ul>
+           <span v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
       </div>
 </div>
   </template>
@@ -104,6 +99,8 @@ import axios from 'axios'
     classeNome: true,
     classePreco: true,
     classeQuantidade: true,
+    buscar:'', 
+    habilitarLixo: false
    
    }),
    methods:{
@@ -130,10 +127,10 @@ import axios from 'axios'
         .catch((erros) => {
           console.log(erros);
         });
+        this.buscar=''
         this.$router.push('/')
     },
     excluirSelecionados(){
-      console.log(this.produtosSelecionados)
       let ids = "";
       let idsExluir = "";
       for (let cont = 0; cont < this.produtosSelecionados.length; cont++) {
@@ -144,7 +141,7 @@ import axios from 'axios'
       }
       idsExluir = ids.substring(0, ids.length - 1);
       axios
-        .delete(this.urlBase + "/destroyRecords/" + "" + idsExluir)
+        .delete(this.urlBase + "/destroyRecords/" +idsExluir)
         .then((response) => {
           this.montarProdutos();
           this.produtosSelecionados = [];
@@ -155,6 +152,8 @@ import axios from 'axios'
         });
         this.visibilidadeExclusao="display:none"
         this.desativar=false
+        this.buscar=''
+        this.$router.push('/')
     },
     ordenar(tipo) {
       if (tipo == "nome") {
@@ -236,23 +235,47 @@ import axios from 'axios'
         }
       }
     },
+  
 
    },
     created(){
       this.montarProdutos()
     },
     watch:{
-      $route(to){
-       if(to.path == '/cadastro'){
-        this.montarProdutos()
-       }
+     
+      buscar(){
+        this.montarProdutos(this.buscar)
       },
+      produtosSelecionados(){
+      
+        if(this.produtosSelecionados.length >= 1){
+          this.desativar = true
+          this.habilitarLixo = true
+        }else{
+          this.desativar = false
+          this.habilitarLixo = false
+        }
+      }
     }
   }
   </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+#buscar input{
+   padding: 10px;
+   font-size:larger;
+   border-right:none;
+   border-top: none;
+   border-left: none;
+   border-width: 1px;
+   outline: 0;
+   width: 50vh;
+ 
+ }
+ #buscar input:focus{
+  border-color: #292bcf;
+ }
   .alerta{
      position: fixed;
     flex-flow: column nowrap;
@@ -359,19 +382,19 @@ a {
   position: absolute;
   top: 50%;
 }
-.paginacao a{
-  text-decoration: none;
-
+.paginacao span{
+  margin: 5px;
+ 
 }
-.paginacao li{
-  display: inline;
-  padding: 10px;
+.paginacao span:hover{
+  cursor: pointer;
+  color: blue;
 }
 #buscar{
   position: absolute;
   bottom: 0%;
   left: 20%;
-  margin: 20px ;
+  margin-bottom: 20px ;
   width: 50%;
  }
 
@@ -387,29 +410,13 @@ a {
    box-shadow: 2px 1px 2px 0px rgb(174, 187, 199);
  }
  #buscar #excluirButton {
-  font-size: larger;
-   background-color: #d4343e;
-   border-color: #d4343e;
-   color: aliceblue;
-   border-radius:5px 5px 5px 5px ;
-   padding: 0px 10px 0px 10px;
-   border:none;
-   height: 26px;
-   box-shadow: 2px 1px 2px 0px rgb(174, 187, 199);
+   font-size: 25px;
+   color:  #000000;
    margin-left: 10px;
+   position: relative;
+   left: 10%;
  }
- #buscar #excluirButtonInvalido {
-  font-size: larger;
-   background-color: #d3d1d1;
-   border-color: #d4343e;
-   color: rgb(7, 7, 7);
-   border-radius:5px 5px 5px 5px ;
-   padding: 0px 10px 0px 10px;
-   border:none;
-   height: 26px;
-   box-shadow: 2px 1px 2px 0px rgb(174, 187, 199);
-   margin-left: 10px;
- }
+
 
  #buscar input{
    font-size:larger;
@@ -421,13 +428,10 @@ a {
  }
  #buscar #excluirButton:hover{
     cursor: pointer;
+    color:  #d4343e;
  }
- #buscar #excluirButtonInvalido:hover{
-  cursor: not-allowed;
- }
- #buscar #excluirButton:active{
-  box-shadow: 2px 1px 0px 0px rgb(174, 187, 199);
- }
+
+
  #buscar #buscarButton:hover{
     cursor: pointer;
  }
@@ -440,10 +444,9 @@ a {
  }
  .excluirIcone:hover{
   cursor: pointer;
+   color:  #d4343e;
 }
-.excluirIconeInvalido:hover{
-  cursor: not-allowed;
-}
+
 
 
   </style>

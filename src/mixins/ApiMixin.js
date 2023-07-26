@@ -4,17 +4,31 @@ export default{
         urlBase: "https://apicadastrosimples-fb77b399cf41.herokuapp.com/api/produto",
         produtos:{},
         produto:{},
-        urlPaginacao:'page=1'
+        urlPaginacao:'page=1',
+        buscar:''
       }),
       methods:{
       paginar(l){
+        if(l.url != null){
         this.urlPaginacao = l.url.split('?')[1]
         console.log(this.urlPaginacao)
+        if(this.buscar!=''){
+          this.montarProdutos(this.buscar)
+        }else{
         this.montarProdutos()
+        }
+      }
       },
-    montarProdutos(){
+    montarProdutos(busca){
         let url
+        if(busca !=undefined){
+          url = this.urlBase +'?'+this.urlPaginacao+'&search='+busca
+          this.buscar=busca
+        }else{
+          console.log('asd')
         url = this.urlBase +'?'+this.urlPaginacao
+        }
+        console.log(busca)
         console.log(url)
         axios
           .get(url)

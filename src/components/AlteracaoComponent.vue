@@ -59,7 +59,13 @@
              .then(response=>{
               this.resposta = "Produto alterado com sucesso"
               console.log(response)
-              this.$router.replace('/')
+                    if(this.resposta !=''){
+              setTimeout(() => {
+                location.replace(1)
+              }, "200")
+            }
+            
+        
              })
              .catch( erros=>{
               this.resposta = "Produto não alterado! "+erros.message
