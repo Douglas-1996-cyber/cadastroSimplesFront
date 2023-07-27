@@ -73,8 +73,8 @@
     </span>
    </div>     
   </div>
-  <div class="paginacao">
-           <span v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
+  <div class="paginacao" v-if="produtos.last_page > 1">
+           <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
       </div>
 </div>
   </template>
@@ -104,8 +104,8 @@ import axios from 'axios'
    
    }),
    methods:{
-    teste(l){
-   console.log(l)
+    teste(){
+   console.log(this.produtos.last_page)
     },
     verificarExcluirSelecionados(){
       this.visibilidadeExclusao = 'display:flex'
