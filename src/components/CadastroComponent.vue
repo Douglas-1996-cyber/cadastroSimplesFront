@@ -113,8 +113,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-     width: 100%;
-   
+    width: 100%;
+    position: relative;  
   }
   .form-group{
     margin-bottom: 2rem;
@@ -138,6 +138,7 @@
 
  .cadastro{
   width: 100%;
+  position: absolute;
  }
  .formulario span{
   position: absolute;

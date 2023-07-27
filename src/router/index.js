@@ -23,6 +23,7 @@ const routes = [
       }
     ]
   },
+  {path:'/:catchAll(.*)*',redirect: { path: "/" } },
  
 
   {

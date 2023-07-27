@@ -1,13 +1,14 @@
 <template>
   <div>
     <div class="listar">
-      <form id="buscar">
-          <input type="text" autocomplete="off" name="buscar" placeholder="Buscar" v-model="buscar"/>
-          <span v-if="habilitarLixo"  id='excluirButton' 
-          :disabled="!produtosSelecionados.length > 0" @click="verificarExcluirSelecionados">
-     <i class="fa-solid fa-trash-can"></i></span> 
-      </form>
-     
+        <form id="buscar">
+            <input type="text" autocomplete="off" name="buscar" placeholder="Buscar" v-model="buscar"/>
+            <span v-if="habilitarLixo"  id='excluirButton' 
+            :disabled="!produtosSelecionados.length > 0" @click="verificarExcluirSelecionados">
+            <i class="fa-solid fa-trash-can"></i></span> 
+        </form>
+     <div class="listaProdutos">
+
       <table class="tabelaProduto" cellpadding="2" width="100%">
       <thead>
         <tr>
@@ -58,6 +59,10 @@
         </tr>
       </tbody>
     </table>
+      <div class="paginacao" v-if="produtos.last_page > 1">
+         <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
+      </div>
+  </div>
    <div class="alerta" :style="visibilidade">
     Tem certeza que deseja excluir o produto {{ nomeProduto }}?
     <span>
@@ -73,9 +78,7 @@
     </span>
    </div>     
   </div>
-  <div class="paginacao" v-if="produtos.last_page > 1">
-           <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
-      </div>
+  
 </div>
   </template>
   
@@ -99,7 +102,7 @@ import axios from 'axios'
     classeNome: true,
     classePreco: true,
     classeQuantidade: true,
-    buscar:'', 
+   
     habilitarLixo: false
    
    }),
@@ -262,6 +265,48 @@ import axios from 'axios'
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+  .listar {
+  margin-top: 50px;
+  position: absolute;
+  left: 20%;
+  width: 70%;
+  top:10%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.listaProdutos{
+  position: absolute;
+  left: 0%;
+  top: 10%;
+  width: 100%;
+}
+.tabelaProduto {
+  position: relative;
+  font-size: 20px;
+}
+.paginacao{
+  position: relative;
+  margin-top: 10px;
+  left: 50%;
+  width: 10%;
+}
+.paginacao span{
+  margin: 5px;
+}
+.paginacao span:hover{
+  cursor: pointer;
+  color: blue;
+}
+#buscar{
+  position: absolute;
+  left: 20%;
+  bottom:100%;
+  width: 50%;
+  margin-bottom:20px ;
+ }
 #buscar input{
    padding: 10px;
    font-size:larger;
@@ -271,7 +316,6 @@ import axios from 'axios'
    border-width: 1px;
    outline: 0;
    width: 50vh;
- 
  }
  #buscar input:focus{
   border-color: #292bcf;
@@ -311,30 +355,9 @@ import axios from 'axios'
   cursor: pointer;
 }
 
-.listar {
-  margin-top: 50px;
-  position: relative;
-  left: 20%;
-  width: 70%;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-}
 
-.formulario {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-}
-  .tabelaProduto {
-  position: absolute;
-  left: 0%;
-  top: 20%;
-  font-size: 20px;
-}
+
+
 tr {
   text-align: left;
 }
@@ -378,25 +401,9 @@ a {
   margin: 10px;
 }
 
-.paginacao{
-  position: absolute;
-  top: 50%;
-}
-.paginacao span{
-  margin: 5px;
- 
-}
-.paginacao span:hover{
-  cursor: pointer;
-  color: blue;
-}
-#buscar{
-  position: absolute;
-  bottom: 0%;
-  left: 20%;
-  margin-bottom: 20px ;
-  width: 50%;
- }
+
+
+
 
  #buscar #buscarButton {
    font-size: larger;

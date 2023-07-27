@@ -67,7 +67,13 @@ export default{
         this.produto = response.data
         console.log(this.produto)
         }) 
-       .catch( erros=>{console.log(erros)})
+       .catch( erros=>{
+        console.log(erros)
+        if(erros){
+          location.replace('/')
+        }
+      })
+      
        }
     }
 }

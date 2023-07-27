@@ -61,7 +61,7 @@
               console.log(response)
                     if(this.resposta !=''){
               setTimeout(() => {
-                location.replace(1)
+                location.replace('/')
               }, "200")
             }
             

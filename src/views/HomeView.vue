@@ -23,7 +23,8 @@ export default {
 <style scoped>
 .acoes{
   position: absolute;
-  top:60%;
+  margin-top: 50px;
+  top:500px;
   left: 30%;
   width: 50%;
 
