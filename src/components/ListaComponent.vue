@@ -6,10 +6,14 @@
             <span v-if="habilitarLixo"  id='excluirButton' 
             :disabled="!produtosSelecionados.length > 0" @click="verificarExcluirSelecionados">
             <i class="fa-solid fa-trash-can"></i></span> 
-        </form>
-     <div class="listaProdutos">
+        </form> 
+    
 
+    
+     <div class="listaProdutos" >
+   
       <table class="tabelaProduto" cellpadding="2" width="100%">
+        
       <thead>
         <tr>
           <th class="ordenar" @click="ordenar('nome')">
@@ -59,6 +63,7 @@
         </tr>
       </tbody>
     </table>
+    <div  class="lds-ring" v-if="this.loading"><div></div><div></div><div></div><div></div></div>  
       <div class="paginacao" v-if="produtos.last_page > 1">
          <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
       </div>
@@ -78,7 +83,8 @@
     </span>
    </div>     
   </div>
-  
+
+ 
 </div>
   </template>
   
@@ -107,9 +113,6 @@ import axios from 'axios'
    
    }),
    methods:{
-    teste(){
-   console.log(this.produtos.last_page)
-    },
     verificarExcluirSelecionados(){
       this.visibilidadeExclusao = 'display:flex'
       this.desativar=true
@@ -243,7 +246,9 @@ import axios from 'axios'
    },
     created(){
       this.montarProdutos()
+     
     },
+
     watch:{
      
       buscar(){
@@ -322,20 +327,26 @@ import axios from 'axios'
  }
   .alerta{
      position: fixed;
-    flex-flow: column nowrap;
+     flex-flow: column nowrap;
      top: 30vh;
      left: 30vw;
      z-index: 10;
      background-color:aliceblue;
      padding: 2px;
      width: 30%;
+     height: 8%;
      align-items: center;
+     justify-content: center;
      box-shadow:  0px 1px 2px 0px;
      border-radius: 5px;
+     margin: 5px;
   }
   .alerta button{
     width: 100px;
     margin: 5px;
+  }
+  .alerta button:hover{
+    cursor: pointer;
   }
 .ativado {
   color: blue;
@@ -452,6 +463,43 @@ a {
  .excluirIcone:hover{
   cursor: pointer;
    color:  #d4343e;
+}
+
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #8d8c8c;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #9b9b9b transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 

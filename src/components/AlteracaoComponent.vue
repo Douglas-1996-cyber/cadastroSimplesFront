@@ -1,6 +1,6 @@
 <template>
   <div class="alteracao">
-    <h1>Alteracao</h1>
+    <h1>Alteração</h1>
     <div class="formulario">
         <div class="form-group">
           <input type="text" autocomplete="off" name="nome" id="name"  v-model="produto.name" required> 

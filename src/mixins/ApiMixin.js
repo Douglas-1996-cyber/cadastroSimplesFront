@@ -5,7 +5,8 @@ export default{
         produtos:{},
         produto:{},
         urlPaginacao:'page=1',
-        buscar:''
+        buscar:'',
+        loading:true
       }),
       methods:{
       paginar(l){
@@ -25,14 +26,13 @@ export default{
           url = this.urlBase +'?'+this.urlPaginacao+'&search='+busca
           this.buscar=busca
         }else{
-          console.log('asd')
+
         url = this.urlBase +'?'+this.urlPaginacao
         }
-        console.log(busca)
-        console.log(url)
         axios
           .get(url)
           .then((res) => {
+            this.loading = false
             this.produtos = res.data;
             this.produtos.links[0].label = "Anterior"
              this.produtos.links[this.produtos.links.length - 1].label = "Proximo"
@@ -65,7 +65,6 @@ export default{
         axios.get(this.urlBase+'/'+id)
         .then(response=>{
         this.produto = response.data
-        console.log(this.produto)
         }) 
        .catch( erros=>{
         console.log(erros)

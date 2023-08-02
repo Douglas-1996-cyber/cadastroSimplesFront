@@ -16,8 +16,9 @@
           </div>
           <div class="form-group">
             <button type="button" :class="btnSalvar ? 'salvar' : 'salvarInvalido'" :disabled="!btnSalvar" @click="salvar()">Salvar</button>
-            {{ resposta }}
           </div>
+          <div :class="!axiosErro ? 'respostaValida':'respostaInvalida'" v-if="resposta">{{resposta}}</div>
+
        </div>
     </div>
   </template>
@@ -35,13 +36,11 @@
     erro:'',
     btnSalvar:false,
     resposta:'',
-    inicioPf: false
+    inicioPf: false,
+    axiosErro:''
     }),
     methods:{
       salvar(){
-        if(this.name == "" || this.price == "" || this.amount ==""){
-          this.resposta = "Todos os campos devem ser preenchidos"
-        }
        let data = {
         name :this.name,
         price :this.price,
@@ -60,9 +59,8 @@
               this.resposta = "Produto cadastro com sucesso"
             })
              .catch( erros=>{
-              console.log(erros)
-              
-                this.resposta = "Produto não cadastrado! "+erros.message
+                this.axiosErro = erros.message
+               this.resposta = "Erro ao cadastrar os produtos, verifique todos os campos e tente novamente"
             })
           
          this.name=""
@@ -80,27 +78,20 @@
       if(this.resposta !=''){
         setTimeout(() => {
         location.reload()
-         }, "200")
+         }, "1000")
       }
-    },
-    created(){
-      console.log('criado')
-    
     },
     watch:{
       price(){
         console.log(this.price.indexOf('.'))
         if(this.price.indexOf('.') != -1){
           this.inicioPf = true
-          console.log('valor encontrado')
+   
         }
          if(this.price == ""){
           this.inicioPf = false
         }
       },
-      $route(to,from){
-        console.log(from+"sadasdasd"+to)
-    }
   }
     
   }
@@ -108,7 +99,17 @@
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
-  .formulario{
+.respostaValida{
+  background-color: #42b983;
+  width: 50%;
+  padding: 5px;
+}
+.respostaInvalida{
+  background-color: #b94242;
+  width: 50%;
+  padding: 5px;
+}
+.formulario{
     display: flex;
     flex-direction: column;
     align-items: center;
