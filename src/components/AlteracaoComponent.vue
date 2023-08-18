@@ -1,6 +1,7 @@
 <template>
   <div class="alteracao">
     <h1>Alteração</h1>
+      <!---
     <div class="formulario">
         <div class="form-group">
           <input type="text" autocomplete="off" name="nome" id="name"  v-model="produto.name" required> 
@@ -19,15 +20,20 @@
          {{resposta}}
         </div>
      </div>
+        -->
+        <formulario-component tipo="alteracao"/>
   </div>
 </template>
   
   <script>
   import ApiMixin from '@/mixins/ApiMixin'
-  import axios from "axios";
+
+  import { mapMutations} from 'vuex';
+  import FormularioComponent from './FormularioComponent.vue'
   export default {
     name: 'AlteracaoComponent',
     mixins:[ApiMixin],
+    components: { FormularioComponent },
     data:()=>({
       price:'',
       amount:'',
@@ -38,43 +44,14 @@
    
     }),
     methods:{
-      alterar(){
-         console.log(this.produto)
-      },
-     salvarAlteracao(){
-       let data = {
-        name :this.produto.name,
-        price :this.produto.price,
-        amount:this.produto.amount,
-        _method:'patch'
-       }
-        const config = {
-          headers:{
-            'Content-Type':'multipart/form-data',
-            'Accept':'application/json'
-          }
-        }
+      ...mapMutations({
+          setIdProduto:'setIdProduto' 
+        }),
 
-        axios.post(this.urlBase+'/'+this.produto.id,data,config)
-             .then(response=>{
-              this.resposta = "Produto alterado com sucesso"
-              console.log(response)
-                    if(this.resposta !=''){
-              setTimeout(() => {
-                location.replace('/')
-              }, "200")
-            }
-            
-        
-             })
-             .catch( erros=>{
-              this.resposta = "Produto não alterado! "+erros.message
-            })
-        
-      },
+    
     },
     created(){
-      this.consultarID(this.$route.params.id)
+      this.setIdProduto(this.$route.params.id)
     },
     updated(){
 
@@ -88,20 +65,9 @@
       watch:{
       $route(to){
         if(to.params.id !=undefined){
-        this.consultarID(to.params.id)
-        console.log(this.produto.name)
+        this.setIdProduto(to.params.id)
         }
       },
-        price(){
-        console.log(this.price.indexOf('.'))
-        if(this.price.indexOf('.') != -1){
-          this.inicioPf = true
-          console.log('valor encontrado')
-        }
-         if(this.price == ""){
-          this.inicioPf = false
-        }
-      }
      }
       
   }

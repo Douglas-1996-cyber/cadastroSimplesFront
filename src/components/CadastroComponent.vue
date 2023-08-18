@@ -1,6 +1,7 @@
 <template>
     <div class="cadastro">
       <h1>Cadastro</h1>
+      <!---
       <div class="formulario">
           <div class="form-group">
             <input type="text" autocomplete="off" name="nome" id="name"  v-model="name" required> 
@@ -18,178 +19,46 @@
             <button type="button" :class="btnSalvar ? 'salvar' : 'salvarInvalido'" :disabled="!btnSalvar" @click="salvar()">Salvar</button>
           </div>
           <div :class="!axiosErro ? 'respostaValida':'respostaInvalida'" v-if="resposta">{{resposta}}</div>
-
        </div>
+       -->
+       <formulario-component tipo="cadastro"/>
     </div>
+    
   </template>
   
   <script>
-   import axios from "axios";
    import ApiMixin from '@/mixins/ApiMixin'
+   import FormularioComponent from "./FormularioComponent.vue";
+   import { mapState,mapMutations } from 'vuex';
+
   export default {
+  components: { FormularioComponent },
     name: 'CadastroComponent',
     mixins:[ApiMixin],
-    data:()=>({
-    price:'',
-    amount:'',
-    name:'',
-    erro:'',
-    btnSalvar:false,
-    resposta:'',
-    inicioPf: false,
-    axiosErro:''
-    }),
     methods:{
-      salvar(){
-       let data = {
-        name :this.name,
-        price :this.price,
-        amount :this.amount,
-       }
-        let config = {
-          headers:{
-            'Content-Type':'application/x-www-form-urlencoded',
-            'Accept':'application/json'
-          }
-        }
-       
-        axios.post(this.urlBase,data,config)
-             .then(response=>{
-              console.log(response.status)
-              this.resposta = "Produto cadastro com sucesso"
-            })
-             .catch( erros=>{
-                this.axiosErro = erros.message
-               this.resposta = "Erro ao cadastrar os produtos, verifique todos os campos e tente novamente"
-            })
-          
-         this.name=""
-         this.price=""
-         this.amount=""
-      }, 
+      ...mapMutations({
+        setIdProduto:'setIdProduto',     
+        }),
     },
-    updated(){
-       if(this.price !="" && this.amount !="" && this.name!=""){
-         this.btnSalvar = true
-      }else{
-        this.btnSalvar = false
-      }
+    computed:{
+        ...mapState({
+          idProduto:state => state.idProduto
+        })
 
-      if(this.resposta !=''){
-        setTimeout(() => {
-        location.reload()
-         }, "1000")
-      }
-    },
-    watch:{
-      price(){
-        console.log(this.price.indexOf('.'))
-        if(this.price.indexOf('.') != -1){
-          this.inicioPf = true
-   
-        }
-         if(this.price == ""){
-          this.inicioPf = false
-        }
       },
-  }
-    
-  }
+     
+   
+   }
   </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
-.respostaValida{
-  background-color: #42b983;
-  width: 50%;
-  padding: 5px;
-}
-.respostaInvalida{
-  background-color: #b94242;
-  width: 50%;
-  padding: 5px;
-}
-.formulario{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    position: relative;  
-  }
-  .form-group{
-    margin-bottom: 2rem;
-    position: relative;
-  }
-
- input{
-   padding: 10px;
-   font-size:larger;
-   border-right:none;
-   border-top: none;
-   border-left: none;
-   border-width: 1px;
-   outline: 0;
-   width: 50vh;
- 
- }
- input:focus{
-  border-color: #292bcf;
- }
 
  .cadastro{
   width: 100%;
   position: absolute;
  }
- .formulario span{
-  position: absolute;
-  left:5px;
-  top:16px;
-  pointer-events: none;
-  transition: 0.5s;
-  opacity: .5;
- }
- .formulario input:focus + span,
- .formulario input:valid + span
- {
- transform: translateY(-40px);
- font-size: 14px;
- opacity: 1;
- } 
- /* Chrome e outros */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-.salvar{
-  background-color: #42b983;
-  color: aliceblue;
-  width: 50vh;
-  border-color: #42b983;
-  border-radius: 5px;
-  font-size: large;
-}
-.salvar:hover{
-  background-color: rgb(83, 206, 150);
-  cursor: pointer;
-}
-.salvarInvalido{
-  background-color: #757776;
-  color: aliceblue;
-  width: 50vh;
-  border-color: #949695;
-  border-radius: 5px;
-  font-size: large;
-}
-.salvarInvalido:hover{
-  background-color: rgb(104, 105, 105);
-  cursor: not-allowed;
-}
+
   h3 {
     margin: 40px 0 0;
   }

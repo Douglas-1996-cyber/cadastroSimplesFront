@@ -4,7 +4,7 @@
         <form id="buscar">
             <input type="text" autocomplete="off" name="buscar" placeholder="Buscar" v-model="buscar"/>
             <span v-if="habilitarLixo"  id='excluirButton' 
-            :disabled="!produtosSelecionados.length > 0" @click="verificarExcluirSelecionados">
+            :disabled="!selecionados.length > 0" @click="verificarExcluirSelecionados">
             <i class="fa-solid fa-trash-can"></i></span> 
         </form> 
     
@@ -53,114 +53,56 @@
           <td>R$ {{ produto.price }}</td>
           <td>{{ produto.amount }}</td>
           <td >
-            <span v-if="!desativar" id="excluirButton" @click="VerificarExclusao(produto)" style="margin-right:2px;" 
+            <span v-if="!desativar" id="excluirButton" @click="verificarExclusao(produto)" style="margin-right:2px;" 
             :class="!desativar ? 'excluirIcone' : 'excluirIconeInvalido'"
             ><i class="fa-solid fa-trash-can"></i></span>
               <router-link v-if="!desativar" :to="`/alteracao/${produto.id}`"><i class="fa-solid fa-pencil"></i></router-link>
               
           </td>
-          <td><input type="checkbox" :value="produto.id" v-model="produtosSelecionados" /></td>
+          <td><input type="checkbox" :value="produto.id" v-model="selecionados" /></td>
         </tr>
       </tbody>
     </table>
+
     <div  class="lds-ring" v-if="this.loading"><div></div><div></div><div></div><div></div></div>  
-      <div class="paginacao" v-if="produtos.last_page > 1">
+     
+    <div class="paginacao" v-if="produtos.last_page > 1">
          <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
       </div>
   </div>
-   <div class="alerta" :style="visibilidade">
-    Tem certeza que deseja excluir o produto {{ nomeProduto }}?
-    <span>
-    <button type="button" @click="excluir(idProduto)">Sim</button>
-    <button type="button" @click="visibilidade ='display:none'">Não</button>
-    </span>
-   </div>     
-   <div class="alerta" :style="visibilidadeExclusao">
-    Tem certeza que deseja excluir os produtos selecionado?
-    <span>
-    <button type="button" @click="excluirSelecionados">Sim</button>
-    <button type="button" @click="visibilidadeExclusao ='display:none', desativar=false, produtosSelecionados=[]">Não</button>
-    </span>
-   </div>     
+  
   </div>
 
- 
+  <AlertComponent ></AlertComponent>   
+   
+
 </div>
   </template>
   
   <script>
 import ApiMixin from '@/mixins/ApiMixin'
-import axios from 'axios'
+import AlertComponent from './AlertComponent.vue';
+
   export default {
     name: 'ListaComponent',
    mixins:[ApiMixin],
+   components:{
+    AlertComponent
+   },
    data:()=>({
-    nomeProduto:'',
-    idProduto:'',
-    visibilidade:'display:none',
+    
     resposta:false,
-    produtosSelecionados:[],
-    visibilidadeExclusao:"display:none",
-    desativar:false,
     ordemNome: "crescente",
     ordemPreco: "crescente",
     ordemQuantidade: "crescente",
     classeNome: true,
     classePreco: true,
     classeQuantidade: true,
-   
     habilitarLixo: false
    
    }),
    methods:{
-    verificarExcluirSelecionados(){
-      this.visibilidadeExclusao = 'display:flex'
-      this.desativar=true
-    },
-    VerificarExclusao(produto){
-      this.visibilidade = 'display:flex'
-      this.nomeProduto = produto.name
-      this.idProduto = produto.id  
-    },
-    excluir(id){
-      this.visibilidade='display:none',
-     axios
-        .delete(this.urlBase + "/" + id)
-        .then((response) => {
-          this.montarProdutos();
-          console.log(response);
-        })
-        .catch((erros) => {
-          console.log(erros);
-        });
-        this.buscar=''
-        this.$router.push('/')
-    },
-    excluirSelecionados(){
-      let ids = "";
-      let idsExluir = "";
-      for (let cont = 0; cont < this.produtosSelecionados.length; cont++) {
-        ids += this.produtosSelecionados[cont];
-        if (ids.length != 0) {
-          ids += ";";
-        }
-      }
-      idsExluir = ids.substring(0, ids.length - 1);
-      axios
-        .delete(this.urlBase + "/destroyRecords/" +idsExluir)
-        .then((response) => {
-          this.montarProdutos();
-          this.produtosSelecionados = [];
-          console.log(response);
-        })
-        .catch((erros) => {
-          console.log(erros);
-        });
-        this.visibilidadeExclusao="display:none"
-        this.desativar=false
-        this.buscar=''
-        this.$router.push('/')
-    },
+
     ordenar(tipo) {
       if (tipo == "nome") {
         if (this.ordemNome == "crescente") {
@@ -254,9 +196,9 @@ import axios from 'axios'
       buscar(){
         this.montarProdutos(this.buscar)
       },
-      produtosSelecionados(){
+      selecionados(){
       
-        if(this.produtosSelecionados.length >= 1){
+        if(this.selecionados.length >= 1){
           this.desativar = true
           this.habilitarLixo = true
         }else{
@@ -270,6 +212,31 @@ import axios from 'axios'
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+
+.alerta{
+   display: flex;
+     position: fixed;
+     flex-flow: column nowrap;
+     top: 30vh;
+     left: 30vw;
+     z-index: 10;
+     background-color:aliceblue;
+     padding: 2px;
+     width: 30%;
+     height: 8%;
+     align-items: center;
+     justify-content: center;
+     box-shadow:  0px 1px 2px 0px;
+     border-radius: 5px;
+     margin: 5px;
+  }
+  .alerta button{
+    width: 100px;
+    margin: 5px;
+  }
+  .alerta button:hover{
+    cursor: pointer;
+  }
   .listar {
   margin-top: 50px;
   position: absolute;
@@ -325,29 +292,7 @@ import axios from 'axios'
  #buscar input:focus{
   border-color: #292bcf;
  }
-  .alerta{
-     position: fixed;
-     flex-flow: column nowrap;
-     top: 30vh;
-     left: 30vw;
-     z-index: 10;
-     background-color:aliceblue;
-     padding: 2px;
-     width: 30%;
-     height: 8%;
-     align-items: center;
-     justify-content: center;
-     box-shadow:  0px 1px 2px 0px;
-     border-radius: 5px;
-     margin: 5px;
-  }
-  .alerta button{
-    width: 100px;
-    margin: 5px;
-  }
-  .alerta button:hover{
-    cursor: pointer;
-  }
+  
 .ativado {
   color: blue;
 }
@@ -365,8 +310,6 @@ import axios from 'axios'
 .fechar:hover {
   cursor: pointer;
 }
-
-
 
 
 tr {
