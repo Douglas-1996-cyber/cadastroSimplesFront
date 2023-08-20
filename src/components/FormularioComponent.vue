@@ -17,10 +17,11 @@
           <button type="button" :class="btnSalvar ? 'salvar' : 'salvarInvalido'" :disabled="!btnSalvar"
            @click="tipo == 'alteracao' ? alterar() : cadastrar()">Salvar</button>
         </div>
-        <div v-if="$store.state.resposta.mensagem !=undefined" :class="$store.state.resposta.statusCode == 201 || 200 ? 'respostaValida':'respostaInvalida'">
+        <div v-if="$store.state.resposta.mensagem !=undefined" 
+        :class="$store.state.resposta.statusCode == 201 || $store.state.resposta.statusCode == 200 ? 'respostaValida':'respostaInvalida'">
           {{$store.state.resposta.mensagem}}
         </div>
-        {{ resposta }}
+        
      </div>
 
  </template>
@@ -103,7 +104,6 @@
      },
    watch:{
     price(){
-        console.log(this.price.indexOf('.'))
         if(this.price.indexOf('.') != -1){
           this.inicioPf = true
         }
@@ -120,7 +120,9 @@
         ...mapState({
           urlBase:state =>state.urlBase,
           idProduto:state => state.idProduto
-        })
+        }),
+
+    
 
       },
    updated(){
@@ -129,18 +131,15 @@
       }else{
         this.btnSalvar = false
       }
-
-      if(this.$store.state.resposta.mensagem != undefined){ 
-        setTimeout(() => {
+      if(this.$store.state.resposta.mensagem !=undefined)
+      setTimeout(() => {
         this.setResposta({})
-        location.replace('/cadastro')
+        location.replace('/')
          }, "2500")
-      }
      
     },
     created(){
-      if(this.idProduto != 0) this.consultarID()
-     
+      if(this.idProduto != 0) this.consultarID()     
     }
 
 
@@ -180,7 +179,7 @@
    border-left: none;
    border-width: 1px;
    outline: 0;
-   width: 50vh;
+   width: 30vw;
  
  }
  input:focus{
@@ -219,7 +218,7 @@ input[type=number] {
 .salvar{
   background-color: #42b983;
   color: aliceblue;
-  width: 50vh;
+  width: 30vw;
   border-color: #42b983;
   border-radius: 5px;
   font-size: large;
@@ -231,7 +230,7 @@ input[type=number] {
 .salvarInvalido{
   background-color: #757776;
   color: aliceblue;
-  width: 50vh;
+  width: 30vw;
   border-color: #949695;
   border-radius: 5px;
   font-size: large;

@@ -48,7 +48,7 @@ import { mapState } from 'vuex';
      background-color:aliceblue;
      padding: 2px;
      width: 30%;
-     height: 10%;
+     height: 100px;
      align-items: center;
      justify-content: space-between;
      box-shadow:  0px 1px 2px 0px;
@@ -62,6 +62,7 @@ import { mapState } from 'vuex';
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-between;
+
   }
   .alerta button{
     width: 25%;

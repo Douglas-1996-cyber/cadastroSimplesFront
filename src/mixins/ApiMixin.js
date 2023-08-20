@@ -10,6 +10,7 @@ export default{
         loading:true,
         desativar:false,
         selecionados:[],
+
       }),
       computed:{
         ...mapState({
@@ -114,7 +115,6 @@ export default{
             this.produtos = res.data;
             this.produtos.links[0].label = "Anterior"
              this.produtos.links[this.produtos.links.length - 1].label = "Proximo"
-            console.log(res.data);
           })
           .catch(() => {
             (erros) => {
@@ -179,7 +179,7 @@ export default{
               .then(response=>{
                 resposta.mensagem = 'Alteração realizada com sucesso'
                 resposta.statusCode = response.status
-                console.log( resposta.statusCode)
+                console.log(resposta.statusCode)
                 this.setResposta(resposta)
         
               })
@@ -194,5 +194,6 @@ export default{
          
        },
      
-    }
+    },
+ 
 }

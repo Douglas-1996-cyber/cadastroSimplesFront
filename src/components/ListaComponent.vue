@@ -9,7 +9,6 @@
         </form> 
     
 
-    
      <div class="listaProdutos" >
    
       <table class="tabelaProduto" cellpadding="2" width="100%">
@@ -53,10 +52,19 @@
           <td>R$ {{ produto.price }}</td>
           <td>{{ produto.amount }}</td>
           <td >
-            <span v-if="!desativar" id="excluirButton" @click="verificarExclusao(produto)" style="margin-right:2px;" 
-            :class="!desativar ? 'excluirIcone' : 'excluirIconeInvalido'"
-            ><i class="fa-solid fa-trash-can"></i></span>
-              <router-link v-if="!desativar" :to="`/alteracao/${produto.id}`"><i class="fa-solid fa-pencil"></i></router-link>
+            <ul class="acao" type="none">
+              <li 
+              v-if="!desativar" id="excluirButton" @click="verificarExclusao(produto)" style="margin-right:2px;" 
+              :class="!desativar ? 'excluirIcone' : 'excluirIconeInvalido'"
+              >
+              <i class="fa-solid fa-trash-can"></i>
+              </li>
+              <li>
+                <router-link v-if="!desativar" :to="`/alteracao/${produto.id}`"><i class="fa-solid fa-pencil"></i></router-link>
+              </li>
+            </ul>
+
+             
               
           </td>
           <td><input type="checkbox" :value="produto.id" v-model="selecionados" /></td>
@@ -67,13 +75,17 @@
     <div  class="lds-ring" v-if="this.loading"><div></div><div></div><div></div><div></div></div>  
      
     <div class="paginacao" v-if="produtos.last_page > 1">
-         <span  v-for="l, key in produtos.links" :key="key"  @click="paginar(l)" >{{ l.label }}</span>
+         <ul type="none" v-for="l, key in produtos.links" :key="key"  @click="paginar(l)">
+         <li 
+         :class="l.active ? 'ativo':''" >{{ l.label }}
+        </li>
+         </ul>
       </div>
   </div>
   
   </div>
 
-  <AlertComponent ></AlertComponent>   
+  <AlertComponent/>   
    
 
 </div>
@@ -98,7 +110,8 @@ import AlertComponent from './AlertComponent.vue';
     classeNome: true,
     classePreco: true,
     classeQuantidade: true,
-    habilitarLixo: false
+    habilitarLixo: false,
+    teste:"habilitado"
    
    }),
    methods:{
@@ -205,38 +218,21 @@ import AlertComponent from './AlertComponent.vue';
           this.desativar = false
           this.habilitarLixo = false
         }
+
+
+
+        if(this.$store.state.visibilidadeExclusoes == true){
+          this.$store.commit('setVisibilidadeExclusoes',false)  
+        }
       }
-    }
+    },
+   
   }
   </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
-
-.alerta{
-   display: flex;
-     position: fixed;
-     flex-flow: column nowrap;
-     top: 30vh;
-     left: 30vw;
-     z-index: 10;
-     background-color:aliceblue;
-     padding: 2px;
-     width: 30%;
-     height: 8%;
-     align-items: center;
-     justify-content: center;
-     box-shadow:  0px 1px 2px 0px;
-     border-radius: 5px;
-     margin: 5px;
-  }
-  .alerta button{
-    width: 100px;
-    margin: 5px;
-  }
-  .alerta button:hover{
-    cursor: pointer;
-  }
+ 
   .listar {
   margin-top: 50px;
   position: absolute;
@@ -261,16 +257,23 @@ import AlertComponent from './AlertComponent.vue';
 }
 .paginacao{
   position: relative;
-  margin-top: 10px;
-  left: 50%;
+  margin-top: 20px;
+  left: 0%;
   width: 10%;
+  display: flex;
+  justify-content: center;
 }
-.paginacao span{
-  margin: 5px;
+.paginacao ul{
+  padding: 5px;
 }
-.paginacao span:hover{
+
+.paginacao li:hover{
   cursor: pointer;
   color: blue;
+}
+.ativo{
+  color: blue;
+  font-weight:bold;
 }
 #buscar{
   position: absolute;
@@ -316,8 +319,11 @@ tr {
   text-align: left;
 }
 
-tr:nth-child(even) {
+tbody tr:nth-child(even) {
   background-color: rgb(214, 214, 214);
+}
+tbody tr:hover{
+ background-color: #f1f1f1;
 }
 
 .fa-pencil:hover {
@@ -325,7 +331,14 @@ tr:nth-child(even) {
   color: blue;
 }
 .acao {
-  width: 10%;
+ display: flex;
+ justify-content:left;
+ flex-flow: row nowrap;
+ margin: 0px;
+ padding: 0px;
+}
+.acao li{
+margin-left:10px ;
 }
 a {
   color: black;
@@ -351,12 +364,6 @@ a {
   border-radius: 5px;
   box-shadow: 1px 1px 15px 0px rgb(174, 187, 199);
 }
-.opcoes a {
-  margin: 10px;
-}
-
-
-
 
 
  #buscar #buscarButton {
