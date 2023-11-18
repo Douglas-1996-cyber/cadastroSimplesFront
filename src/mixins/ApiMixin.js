@@ -102,7 +102,7 @@ export default{
     montarProdutos(busca){
         let url
         if(busca !=undefined){
-          url = this.urlBase +'?'+this.urlPaginacao+'&search='+busca
+          url = this.urlBase +'?page=1&search='+busca
           this.buscar=busca
         }else{
 
